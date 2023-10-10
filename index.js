@@ -117,6 +117,22 @@ app.put('/genres/:id',(req,res)=>{
 });
 
 
+// Delete operation using express
+
+app.delete('/genres/:id',(req,res)=>{
+    // Check if element exists or not 
+    let id = req.params.id;
+    let result = genres.find(c =>(c.id === parseInt(id)));
+    if(!result) return res.status(404).send("Genre with the given ID was not found");
+
+    // Delete the element 
+    let index = genres.indexOf(result);
+    genres.splice(index,1);
+    res.send(result);
+
+})
+
+
 
 
 
