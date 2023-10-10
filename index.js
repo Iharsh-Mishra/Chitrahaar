@@ -45,42 +45,49 @@
 //     console.log(`listening on port ${port}`);
 // });
 
+// Import modules
 
 const express = require('express');
 const app = express();
 const Joi = require('joi');
 
+// To read JSON string as object
 app.use(express.json());
 
-let genres = [{id:'1',name:'Comedy'},
-{id:'2',name:'Action'},
-{id:'3',name:'Adventure'},{id:'4',name:'Horror'},
-{id:'5',name:'Thriller'}
+let genres = [{id:1,name:'Comedy'},
+{id:2,name:'Action'},
+{id:3,name:'Adventure'},{id:4,name:'Horror'},
+{id:5,name:'Thriller'}
 ];
 
+
+// Read operation using express get.
 app.get('/genres', (req,res)=>{
     res.send(JSON.stringify(genres));
 });
 
 
 app.get('/genres/:id',(req,res)=>{
-    var id = req.body.id;
-    var genre = genres.find(c => (c.id === parseInt(id)));
+    let id = req.params.id;
+    var genre = genres.find(c => (c.id == parseInt(id)));
 
     if(!genre) return res.status(404).send("Bad request");
     res.send(JSON.stringify(genre));
 });
 
+
+// Create operation using express post.
 app.post('/genres',(req,res)=>{
-    let genre = req.body.genre;
+    let genre = req.body.Name;
     let schema = Joi.object({
         name : Joi.string().min(3).required()
     });
-
     const result = schema.validate(genre);
     if(!result) return res.status(404).send(result.error);
-    let genre1 = {id: genres.length()+1,name :genre};
+    let genre1 = {id: genres.length +1,name :genre};
     genres.push(genre1);
+    res.send(genre);
+    
 
 });
 
@@ -95,6 +102,7 @@ app.post('/genres',(req,res)=>{
 
 let port = process.env.PORT || 3000;
 
+// Listening on the port
 app.listen(port,()=>{
     console.log(`Listening on port ${port}`);
 });
