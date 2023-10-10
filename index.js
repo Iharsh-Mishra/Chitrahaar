@@ -78,21 +78,43 @@ app.get('/genres/:id',(req,res)=>{
 
 // Create operation using express post.
 app.post('/genres',(req,res)=>{
-    let genre = req.body.Name;
+    
     let schema = Joi.object({
         name : Joi.string().min(3).required()
     });
-    const result = schema.validate(genre);
-    if(!result) return res.status(404).send(result.error);
-    let genre1 = {id: genres.length +1,name :genre};
-    genres.push(genre1);
+    const {value,error} = schema.validate(req.body);
+    if(error) return res.status(404).send(error.details[0].message);
+    let genre = { id: genres.length +1,name :value.name};
+    genres.push(genre);
+    
     res.send(genre);
     
 
 });
 
 
+// Update operation using express post.
 
+app.put('/genres/:id',(req,res)=>{
+
+    // Check if element exists or not.
+    let id = req.params.id;
+    let result = genres.find(c =>(c.id === parseInt(id)));
+    if(!result) return res.status(400).send("Bad request");
+
+    // Validate the request.
+    let schema = Joi.object({
+        name : Joi.string().min(3).required()
+    });
+    const {value,error} = schema.validate(req.body);
+    if(error) return res.status(404).send(error.details[0].message);
+    
+
+    // Update the request
+    result.name = value.name;
+    res.send(result); 
+
+});
 
 
 
